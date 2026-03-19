@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  FaShoppingCart, 
-  FaSearch, 
-  FaBars, 
-  FaTimes,
-  FaLeaf,
-  FaTruck,
-  FaHeadset,
-  FaInfoCircle,
-  FaQuestionCircle,
-  FaUser
-} from 'react-icons/fa';
+import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import './Header.css';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
@@ -30,172 +19,147 @@ const Header = () => {
 
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsProductsDropdownOpen(false);
   }, [location]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    if (!isMenuOpen) {
+      setIsProductsDropdownOpen(false);
+    }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Handle search functionality
-    console.log('Searching for:', searchQuery);
-    // You can add navigation to search results here
+  const toggleProductsDropdown = () => {
+    setIsProductsDropdownOpen(!isProductsDropdownOpen);
   };
+
+  // Products dropdown items with icons or additional data
+  const productCategories = [
+    { name: 'Rice', path: '/products/rice', description: 'Premium Basmati & More' },
+    { name: 'Spice', path: '/products/spice', description: 'Authentic Indian Spices' },
+    { name: 'Pulses', path: '/products/pulses', description: 'Protein-Rich Legumes' },
+    { name: 'Garments', path: '/products/garments', description: 'Textile & Apparel' },
+    { name: 'Spare Part', path: '/products/spare-part', description: 'Industrial Components' },
+    { name: 'Industrial Chemicals', path: '/products/industrial-chemicals', description: 'Bulk Chemicals' },
+  ];
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-      {/* Top Bar with Trust Badges */}
-      <div className="top-trust-bar">
-        <div className="container">
-          <div className="trust-items">
-            <div className="trust-item">
-              <FaLeaf className="trust-icon" />
-              <span>100% Fresh Guarantee</span>
-            </div>
-            <div className="trust-item">
-              <FaTruck className="trust-icon" />
-              <span>Free Delivery over ₹499</span>
-            </div>
-            <div className="trust-item">
-              <FaHeadset className="trust-icon" />
-              <span>24/7 Customer Support</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main header */}
-      <div className="main-header">
-        <div className="container">
-          <div className="header-content">
-            {/* Logo and company name with enhanced design */}
-            <Link to="/" className="logo">
-              <div className="logo-container">
-                <div className="logo-icon-wrapper">
-                  <FaLeaf className="logo-icon" />
-                </div>
-                <div className="logo-text-wrapper">
-                  <span className="logo-text">Vistaran Exports</span>
-                  <span className="logo-tagline">Fresh Grocery Delivery</span>
-                </div>
+      <div className="container">
+        <div className="header-content">
+          {/* Logo area - rectangle shape with premium gradient */}
+          <Link to="/" className="logo">
+            <div className="logo-container">
+              <div className="logo-rectangle">
+                {/* Logo image placeholder - replace with your actual logo path */}
+                <img src="/logo.png" alt="Vistaran Exports" className="logo-img" />
               </div>
-            </Link>
+              <div className="logo-text-wrapper">
+                <span className="logo-text">Vistaran</span>
+                <span className="logo-text-light">Exports</span>
+              </div>
+            </div>
+          </Link>
 
-            {/* Enhanced Search bar */}
-            <form className="search-bar" onSubmit={handleSearch}>
-              <input
-                type="text"
-                placeholder="Search for fresh groceries, fruits, vegetables..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="search-btn">
-                <FaSearch />
-              </button>
-              {searchQuery && (
-                <div className="search-suggestions">
-                  {/* You can populate this with actual suggestions */}
-                  <div className="suggestion-item">Fresh Fruits</div>
-                  <div className="suggestion-item">Vegetables</div>
-                  <div className="suggestion-item">Organic Products</div>
-                </div>
-              )}
-            </form>
-
-            {/* Right side actions with enhanced design */}
-            <div className="header-actions">
-              <Link to="/profile" className="action-icon" title="My Account">
-                <FaUser />
-              </Link>
-              <Link to="/cart" className="cart-icon" title="Shopping Cart">
-                <FaShoppingCart />
-                <span className="cart-badge">0</span>
-              </Link>
+          {/* Desktop Navigation */}
+          <nav className="desktop-nav">
+            <ul className="nav-links">
+              <li className={location.pathname === '/' ? 'active' : ''}>
+                <Link to="/">Home</Link>
+              </li>
               
-              {/* Mobile menu button */}
-              <button className={`menu-toggle ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
-                {isMenuOpen ? <FaTimes /> : <FaBars />}
-              </button>
-            </div>
-          </div>
+              {/* Products Dropdown - Enhanced Premium Version */}
+              <li className={`dropdown ${isProductsDropdownOpen ? 'active' : ''}`}>
+                <Link 
+                  to="/products" 
+                  className="dropdown-toggle"
+                  onMouseEnter={() => setIsProductsDropdownOpen(true)}
+                  onMouseLeave={() => setIsProductsDropdownOpen(false)}
+                >
+                  Products <FaChevronDown className="dropdown-icon" />
+                </Link>
+                <div 
+                  className="dropdown-menu"
+                  onMouseEnter={() => setIsProductsDropdownOpen(true)}
+                  onMouseLeave={() => setIsProductsDropdownOpen(false)}
+                >
+                  <div className="dropdown-header">
+                    <span className="dropdown-header-title">Product Categories</span>
+                    <span className="dropdown-header-count">{productCategories.length} items</span>
+                  </div>
+                  <div className="dropdown-grid">
+                    {productCategories.map((category, index) => (
+                      <Link key={index} to={category.path} className="dropdown-item">
+                        <div className="dropdown-item-content">
+                          <span className="dropdown-item-name">{category.name}</span>
+                          <span className="dropdown-item-description">{category.description}</span>
+                        </div>
+                        <span className="dropdown-item-arrow">→</span>
+                      </Link>
+                    ))}
+                  </div>
+                 
+                </div>
+              </li>
+              
+              <li className={location.pathname === '/about' ? 'active' : ''}>
+                <Link to="/about">About Company</Link>
+              </li>
+              
+              <li className={location.pathname === '/contact' ? 'active' : ''}>
+                <Link to="/contact">Contact Us</Link>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Mobile menu button */}
+          <button className={`menu-toggle ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
+            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </div>
 
-      {/* Enhanced Navigation menu */}
-      <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+      {/* Mobile Navigation */}
+      <div className={`mobile-nav ${isMenuOpen ? 'active' : ''}`}>
         <div className="container">
-          <ul className="nav-links">
+          <ul className="mobile-nav-links">
             <li className={location.pathname === '/' ? 'active' : ''}>
-              <Link to="/">Home</Link>
+              <Link to="/" onClick={toggleMenu}>Home</Link>
             </li>
-            <li className={location.pathname === '/products' ? 'active' : ''}>
-              <Link to="/products">All Products</Link>
-            </li>
-            <li className="dropdown">
-              <Link to="/products?category=fruits">Fruits</Link>
-              <div className="dropdown-menu">
-                <Link to="/products?category=fruits&type=citrus">Citrus Fruits</Link>
-                <Link to="/products?category=fruits&type=tropical">Tropical Fruits</Link>
-                <Link to="/products?category=fruits&type=berries">Berries</Link>
-              </div>
-            </li>
-            <li className="dropdown">
-              <Link to="/products?category=vegetables">Vegetables</Link>
-              <div className="dropdown-menu">
-                <Link to="/products?category=vegetables&type=leafy">Leafy Greens</Link>
-                <Link to="/products?category=vegetables&type=root">Root Vegetables</Link>
-                <Link to="/products?category=vegetables&type=seasonal">Seasonal</Link>
-              </div>
-            </li>
-            <li><Link to="/products?category=grains">Grains & Rice</Link></li>
-            <li><Link to="/products?category=dairy">Dairy</Link></li>
-            <li><Link to="/products?category=snacks">Snacks</Link></li>
-            <li><Link to="/offers" className="offer-link">Offers</Link></li>
             
-            {/* New Navigation Items */}
-            <li className={`nav-item ${location.pathname === '/about' ? 'active' : ''}`}>
-              <Link to="/about" className="nav-link">
-                <FaInfoCircle className="nav-icon" />
-                <span>About Us</span>
-              </Link>
+            {/* Mobile Products Dropdown */}
+            <li className="mobile-dropdown">
+              <div className="mobile-dropdown-header" onClick={toggleProductsDropdown}>
+                <span>Products</span>
+                <FaChevronDown className={`dropdown-icon ${isProductsDropdownOpen ? 'open' : ''}`} />
+              </div>
+              <div className={`mobile-dropdown-menu ${isProductsDropdownOpen ? 'open' : ''}`}>
+                {productCategories.map((category, index) => (
+                  <Link 
+                    key={index} 
+                    to={category.path} 
+                    className="mobile-dropdown-item"
+                    onClick={toggleMenu}
+                  >
+                    <span className="mobile-dropdown-item-name">{category.name}</span>
+                    <span className="mobile-dropdown-item-description">{category.description}</span>
+                  </Link>
+                ))}
+                <Link to="/products" className="mobile-dropdown-view-all" onClick={toggleMenu}>
+                  View All Products →
+                </Link>
+              </div>
             </li>
-            <li className={`nav-item ${location.pathname === '/faq' ? 'active' : ''}`}>
-              <Link to="/faq" className="nav-link">
-                <FaQuestionCircle className="nav-icon" />
-                <span>FAQ</span>
-              </Link>
+            
+            <li className={location.pathname === '/about' ? 'active' : ''}>
+              <Link to="/about" onClick={toggleMenu}>About Company</Link>
+            </li>
+            
+            <li className={location.pathname === '/contact' ? 'active' : ''}>
+              <Link to="/contact" onClick={toggleMenu}>Contact Us</Link>
             </li>
           </ul>
-          
-          {/* Mobile-only action buttons */}
-          <div className="mobile-actions">
-            <Link to="/profile" className="mobile-action-btn">
-              <FaUser /> My Account
-            </Link>
-            <Link to="/about" className="mobile-action-btn">
-              <FaInfoCircle /> About Us
-            </Link>
-            <Link to="/faq" className="mobile-action-btn">
-              <FaQuestionCircle /> FAQ
-            </Link>
-          </div>
         </div>
-      </nav>
-
-      {/* Mobile search bar with enhanced design */}
-      <div className="mobile-search">
-        <form className="search-bar" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" className="search-btn">
-            <FaSearch />
-          </button>
-        </form>
       </div>
     </header>
   );

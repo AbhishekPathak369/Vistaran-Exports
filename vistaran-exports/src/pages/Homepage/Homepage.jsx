@@ -75,6 +75,7 @@ const Homepage = () => {
                 <span className="delivery-badge">
                   <FaGlobe /> Global Delivery
                 </span>
+                
               </div>
             </div>
             <div className="hero-image">
